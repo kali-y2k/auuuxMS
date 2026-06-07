@@ -3,6 +3,7 @@ using auuuxMS.Infrastructure;
 using auuuxMS.Services;
 using auuuxMS.Services.Interfaces;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
@@ -25,8 +26,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Spotify
 app.MapArtistsEndpoints();
 app.MapAlbumsEndpoints();
 app.MapSearchEndpoints();
+
+// App
+app.MapConnectsEndpoints();
+app.MapRatesEndpoints();
+app.MapMomentsEndpoints();
+app.MapFeedEndpoints();
+app.MapUsersEndpoints();
 
 app.Run();
