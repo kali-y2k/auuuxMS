@@ -28,7 +28,11 @@ public class SpotifyService(IHttpClientFactory httpClientFactory, SpotifyTokenPr
     public async Task<IReadOnlyList<SpotifyAlbum>> GetArtistAlbumsAsync(string artistId, CancellationToken ct = default)
     {
         var client = await CreateAuthorizedClientAsync(ct);
-        var json = await client.GetFromJsonAsync<JsonElement>($"artists/{artistId}/albums?include_groups=album,single&limit=50", ct);
+        var response = await client.GetAsync($"artists/{artistId}/albums?include_groups=album,single&market=IT", ct);
+        var body = await response.Content.ReadAsStringAsync(ct);
+        if (!response.IsSuccessStatusCode)
+            throw new HttpRequestException($"Spotify {response.StatusCode}: {body}");
+        var json = JsonSerializer.Deserialize<JsonElement>(body);
         return json.GetProperty("items").EnumerateArray().Select(MapAlbum).ToList();
     }
 
